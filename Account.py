@@ -37,6 +37,6 @@ class Account:
         self.__account_balance = round(self.__account_balance, 2)
         return "Withdrew " + str(round(amount,2)) + " from account, new total is " + str(round(self.__account_balance, 2))
     
-    ## Adds the account to the list, read to be written back into the csv
+    # Adds the account to the list, read to be written back into the csv
     def AddToWriteable(self, csv_writer):
         csv_writer.writerow([self.__acc_num, self.__password, self.__account_balance, self.__holder_first_name, self.__holder_sirname])
