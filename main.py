@@ -1,39 +1,11 @@
 from Account import Account
+from DatabaseModel import DatabaseModel
 import csv
 
-__accountsList = []
+# Create an instance of the database model
+db = DatabaseModel()
 
-def __WriteToCsv() :
-    with open("account_data.txt", "w", newline='') as csv_file:
-        csv_writer = csv.writer(csv_file, delimiter=',')
-
-        for a in __accountsList:
-            csv_writer.writerow(a.ForWriter())
-
-
-def __ReadCsv():
-    with open("account_data.txt", "r") as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",")
-        line_count = 0
-
-        for row in csv_reader:
-            if(row == "") :
-                next(csv_reader)
-            else :
-                __accountsList.append(
-                    Account(
-                        int(row[0].strip()), 
-                        row[1].strip(), 
-                        float(row[2].strip()), 
-                        row[3].strip(), 
-                        row[4].strip()
-                    )
-                )
-
-                line_count += 1
-
-__ReadCsv()
-
+# welcome message
 print("******************************************")
 print("* Welcome to the Bank Management Service *")
 print("*                                        *")
@@ -41,43 +13,22 @@ print("******************************************")
 print("")
 print("Please Enter Your Account # and Pass")
 
+# Pulls input for login
 account_number = input("Account #: ")
 password = input("Pass: ")
 print("")
 
-def __ValidateAccount(accountNumber):
-    for x in __accountsList :
-        if(x.acc_num == int(accountNumber)):
-            return x
-            break
+# Calls login functions
+def __Login(num, password) :
+    account = db.LoginToAccount(num, password)
+    if(account != None) :
+        print(f"Welcome back, {account.GetHolderFirstName()}")
+        print("")
+        __LoadUserOptions(account)
+    else :
+        print("Invalid Details. Please Try again.")
 
-def __LoginToAccount(accountNumber, Password) :
-    for x in __accountsList :
-        account = x.Login(accountNumber, Password)
-        if(account != None):
-            print(f"Welcome back, {account.GetHolderFirstName()}")
-            print("")
-            __LoadUserOptions(account)
-            break
-
-def __ViewAccountBalance(account) :
-    print("$" + str(account.GetAccountBalance()))
-
-def __WithdrawFromAccount(account, amount):
-    print(account.WithdrawFromAccount(float(amount)))
-    __WriteToCsv()
-
-def __DepositIntoAccount(account, amount):
-    print(account.DepositToAccount(float(amount)))
-    __WriteToCsv()
-
-def __Transfer(account, amount, destinationAccount):
-    withdrawMessage = account.WithdrawFromAccount(float(amount))
-    depositMessage = destinationAccount.DepositToAccount(float(amount))
-    __WriteToCsv()
-
-    print(withdrawMessage)
-
+# Prints all of the menu options for the user
 def __LoadUserOptions(account) :
     print("****************************")
     print("* Please Select An Option: *")
@@ -93,17 +44,17 @@ def __LoadUserOptions(account) :
     player_choice = input("Enter Option: ")
 
     if(player_choice == "1"):
-        __ViewAccountBalance(account)
+        print(db.ViewAccountBalance(account))
     elif(player_choice == "2"):
         amount = input("Please Enter Withdrawal Amount: ")
-        __WithdrawFromAccount(account, amount)
+        print(db.WithdrawFromAccount(account, amount))
     elif(player_choice == "3"):
         amount = input("Please Enter a Deposit Amount: ")
-        __DepositIntoAccount(account, amount)
+        print(db.DepositIntoAccount(account, amount))
     elif(player_choice == "4"):
         amount = input("Please Enter the Amount to Transfer: ")
         destinationAccountNumber = input("Please Enter the Destination Account Number: ")
-        __Transfer(account, amount, __ValidateAccount(destinationAccountNumber))
+        print(db.Transfer(account, amount, db.ValidateAccount(destinationAccountNumber)))
     elif(player_choice == "5"):
         exit()
     else :
@@ -115,7 +66,8 @@ def __LoadUserOptions(account) :
 
     __LoadUserOptions(account)
 
-__LoginToAccount(account_number, password)
+# Calls login from the database model
+__Login(account_number, password)
 
 
 
