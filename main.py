@@ -8,12 +8,7 @@ account = []
 # Create an instance of the database model
 db = DatabaseModel()
 
-def __SetAccount(acc):
-    account = acc
-
-def __GetAccount():
-    return account
-
+# Handles viewing account balance
 def __HandleViewAccount(account, content_frame) :
     for widget in content_frame.winfo_children():
         widget.destroy()
@@ -24,11 +19,12 @@ def __HandleViewAccount(account, content_frame) :
     account_amount_label = tk.Label(content_frame, bg="lightgreen", text = "Account Balance: " + db.ViewAccountBalance(account), anchor="w")
     account_amount_label.place(relheight=0.1, relwidth=0.9, relx=0.05, rely=0.15)
 
+# Handles withdrawal and prints it to the GUI
 def __HandleWithdrawal(account, amount, content_frame):
     withdraw_message_label = tk.Label(content_frame, bg="lightgreen", text=db.WithdrawFromAccount(account, amount), anchor="w")
     withdraw_message_label.place(relheight=0.1, relwidth=0.9, relx=0.05, rely=0.4)
     
-
+# Opens the withdrawal screen
 def __OpenWithdrawal(account, content_frame):
     for widget in content_frame.winfo_children():
         widget.destroy()
@@ -46,10 +42,12 @@ def __OpenWithdrawal(account, content_frame):
     withdraw_button = tk.Button(content_frame, bg="midnightblue", fg="white", text="Withdraw", command = lambda: __HandleWithdrawal(account, withdrawal_amount_entry.get().strip(), content_frame))
     withdraw_button.place(relheight=0.1, relwidth=0.2, rely=0.3, relx=0.05)
 
+# Handles the deposits and prints message to gui
 def __HandleDeposit(account, amount, content_frame):
     deposit_message_label = tk.Label(content_frame, bg="lightgreen", text=db.DepositIntoAccount(account, amount), anchor="w")
     deposit_message_label.place(relheight=0.1, relwidth=0.9, relx=0.05, rely=0.4)
 
+# Opens deposit screen
 def __OpenDeposit(account, content_frame):
     for widget in content_frame.winfo_children():
         widget.destroy()
@@ -67,10 +65,12 @@ def __OpenDeposit(account, content_frame):
     deposit_button = tk.Button(content_frame, bg="midnightblue", fg="white", text="Deposit", command = lambda: __HandleDeposit(account, deposit_amount_entry.get().strip(), content_frame))
     deposit_button.place(relheight=0.1, relwidth=0.2, rely=0.3, relx=0.05)
 
+# Handles transfer and puts a message on GUI
 def __HandleTransfer(account, amount, recipient, content_frame):
     transfer_message_label = tk.Label(content_frame, bg="lightgreen", text=db.Transfer(account, amount, db.ValidateAccount(recipient)), anchor="w")
     transfer_message_label.place(relheight=0.1, relwidth=0.9, relx=0.05, rely=0.5)    
 
+# Puts transfer screen on the GUI
 def __OpenTransfer(account, content_frame):
     for widget in content_frame.winfo_children():
         widget.destroy()
@@ -121,6 +121,8 @@ def __Login(login_frame, menu_frame, content_frame) :
         __LoadUserOptions(account, menu_frame, content_frame)
     else :
         print("Invalid Details. Please Try again.")
+
+## Initialising the Tkinter GUI
 
 window = tk.Tk(className="Ceejay's Banking System")
 window.geometry("900x600")
