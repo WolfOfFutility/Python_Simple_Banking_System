@@ -74,4 +74,4 @@ class DatabaseModel :
         depositMessage = destinationAccount.DepositToAccount(float(amount))
         self.__WriteToCsv(self.__accountsList)
 
-        return withdrawMessage
+        return f"{amount} successfully transferred to {destinationAccount.GetHolderFirstName()}"
